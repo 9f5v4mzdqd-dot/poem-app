@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>詩をつくろう</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,42 +12,75 @@
 
 body {
   font-family: 'Noto Serif JP', serif;
+  min-height: 100vh;
   background: #1a1a2e;
 }
 
-/* 🌌 空 */
+/* 🌙 修正ポイント① /
 .sky-section {
-  position: relative;
-  overflow: hidden;
-  padding-bottom: 100px;
+  overflow: visible;
   background: linear-gradient(
     to bottom,
-    #1c2a4a 0%, #2d3f6b 40%, #7a7aaa 70%, #e8d0a0 100%
+    #1c2a4a 0%, #2d3f6b 20%, #4a5a8a 38%,
+    #7a7aaa 50%, #c0907a 65%, #e8b070 75%,
+    #f0c878 82%, #e8d0a0 90%, #f5e8c8 100%
   );
+  padding-bottom: 40px;
 }
 
-/* ⭐ 星空（復活ポイント） */
-.sky-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 15% 12%, rgba(255,255,255,0.9), transparent),
-    radial-gradient(1.5px 1.5px at 32% 8%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 48% 15%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(1px 1px at 65% 6%, rgba(255,255,255,0.9), transparent),
-    radial-gradient(1.5px 1.5px at 78% 18%, rgba(255,255,255,0.6), transparent);
-  pointer-events: none;
+/ header /
+header {
+  text-align: center;
+  padding: 50px 20px 20px;
+}
+.title-jp {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 1.8rem;
+  color: white;
+  letter-spacing: 0.2em;
 }
 
-/* ボタン固定 */
-.gen-wrap {
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  width: 100%;
+/ content /
+.sky-content {
   padding: 0 18px;
-  z-index: 100;
+}
+
+.section-label-sky {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.7rem;
+  margin-bottom: 8px;
+}
+
+/ cards /
+.cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.word-card {
+  padding: 8px 14px;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.word-card.selected {
+  background: #4a6a9a;
+  color: white;
+}
+
+/ 🌙 修正ポイント② /
+.gen-wrap {
+  position: sticky;
+  bottom: 10px;
+  padding: 20px 18px;
+  background: linear-gradient(
+    to top,
+    rgba(26,26,46,0.9),
+    rgba(26,26,46,0)
+  );
+  z-index: 10;
 }
 
 .gen-btn {
@@ -56,44 +89,15 @@ body {
   border-radius: 30px;
   border: none;
   background: #5a8a7a;
-  color: #fff;
-  font-size: 1rem;
-}
-
-/* テキスト */
-h2 {
-  text-align: center;
   color: white;
-  padding: 20px;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
 }
 
-/* カード */
-.word-card, .conj-chip {
-  margin: 5px;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 6px;
-  border: none;
-}
-
-.word-card {
-  background: #fff;
-}
-
-.conj-chip {
-  background: #ffe4b5;
-}
-
-.word-card.selected,
-.conj-chip.selected {
-  background: #4a6a9a;
-  color: #fff;
-}
-
-/* プレビュー */
+/ preview /
 .preview-panel {
   background: #f7f4f0;
-  padding-bottom: 100px;
+  padding-bottom: 10px;
 }
 
 .poem-display {
@@ -102,99 +106,105 @@ h2 {
 }
 
 .poem-line {
+  font-family: 'Shippori Mincho', serif;
   font-size: 1.3rem;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
+
+/ control */
+.control-bar {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.control-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: #eee;
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="sky-section">
-  <h2>詩をつくろう</h2>
-  <div id="posBlocks" style="padding:10px;"></div>
 
-  <div class="gen-wrap">
-    <button class="gen-btn" onclick="generatePoem()">詩に追加する</button>
+  <header>
+    <div class="title-jp">詩をつくろう</div>
+  </header>
+
+  <div class="sky-content">
+
+    <div class="section-label-sky">ことばを選んで</div>
+
+    <div class="cards-row">
+      <div class="word-card" onclick="selectWord(this)">月</div>
+      <div class="word-card" onclick="selectWord(this)">影</div>
+      <div class="word-card" onclick="selectWord(this)">風</div>
+      <div class="word-card" onclick="selectWord(this)">光</div>
+    </div>
+
+    <div class="gen-wrap">
+      <button class="gen-btn" onclick="generatePoem()">詩に追加する</button>
+    </div>
+
   </div>
 </div>
 
 <div class="preview-panel">
+
   <div class="poem-display" id="poemDisplay">
-    <div>ことばを選んで詩をつくってください</div>
+    ことばを選んでください
   </div>
+
+  <div class="control-bar">
+    <button class="control-btn" onclick="undoLine()">戻す</button>
+    <button class="control-btn" onclick="resetPoem()">リセット</button>
+  </div>
+
 </div>
 
 <script>
-const words = {
-  noun: ["月","影","風","花"],
-  verb: ["揺れる","漂う","消える"],
-  adj: ["儚い","冷たい","優しい"],
-  adv: ["そっと","ゆっくり"],
-  conj: ["の","と"]
-};
 
-let selected = {};
 let poemStack = [];
 
-function renderCards() {
-  const container = document.getElementById("posBlocks");
-  container.innerHTML = "";
-
-  Object.keys(words).forEach(pos => {
-    const div = document.createElement("div");
-    div.innerHTML = "<h4 style='color:white'>" + pos + "</h4>";
-
-    words[pos].forEach(w => {
-      const btn = document.createElement("button");
-      btn.textContent = w;
-      btn.className = pos === "conj" ? "conj-chip" : "word-card";
-
-      btn.onclick = () => {
-        selected[pos] = w;
-        document.querySelectorAll("." + btn.className).forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-      };
-
-      div.appendChild(btn);
-    });
-
-    container.appendChild(div);
-  });
+function selectWord(el) {
+  document.querySelectorAll('.word-card').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
 }
 
 function generatePoem() {
-  let line = "";
+  const selected = document.querySelector('.word-card.selected');
+  if (!selected) return;
 
-  if (selected.adj && selected.noun) {
-    line += selected.adj + (selected.conj || "") + selected.noun;
-  } else if (selected.noun) {
-    line += selected.noun;
-  }
-
-  if (selected.adv && selected.verb) {
-    line += "\n" + selected.adv + "、" + selected.verb;
-  }
-
-  if (!line) return;
-
-  poemStack.push(line);
+  poemStack.push(selected.textContent);
   renderPoem();
 }
 
 function renderPoem() {
-  const display = document.getElementById("poemDisplay");
-  display.innerHTML = "";
+  const display = document.getElementById('poemDisplay');
+  display.innerHTML = '';
 
   poemStack.forEach(line => {
-    const div = document.createElement("div");
-    div.className = "poem-line";
+    const div = document.createElement('div');
+    div.className = 'poem-line';
     div.textContent = line;
     display.appendChild(div);
   });
 }
 
-renderCards();
+function undoLine() {
+  poemStack.pop();
+  renderPoem();
+}
+
+function resetPoem() {
+  poemStack = [];
+  renderPoem();
+}
+
 </script>
 
 </body>
